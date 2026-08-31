@@ -49,7 +49,9 @@ In your cloud project, authorize the following API services:
 - Smart Home Basic Service: Offers essential functionalities for managing smart home devices.
 - Device Status Notification: Sends real-time notifications on device status updates.
 - Device Pool Management: Allows obtaining information about devices, including current status and properties.
-=======
+
+---
+
 ## Step 1 — Install the mobile app
 
 Install **Tuya**, published by Tuya Smart Inc. The app used to be called *Tuya Smart* and

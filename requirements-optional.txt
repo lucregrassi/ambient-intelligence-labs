@@ -1,0 +1,4 @@
+# Spoken announcement when motion is detected. Entirely optional: main.py
+# runs without it. On macOS this pulls in the whole PyObjC framework set
+# (~170 packages), and on Linux it also needs the system package espeak-ng.
+pyttsx3>=2.98

@@ -1,27 +1,52 @@
-# Tuya Cloud Interface: Real-Time PIR Motion Sensor Monitoring
+# Tuya Cloud Interface — reading a PIR motion sensor from the cloud
 
-This guide explains how to set up and use a PIR Motion Sensor with the Tuya IoT Cloud platform and interact with it using the Tuya Cloud Interface Python project. Following these steps, you can link the sensor to the cloud, retrieve its data, and monitor real-time motion detection.
+Ambient Intelligence · University of Genoa
+
+This guide takes you from the unboxing of a PIR motion sensor to a Python script printing
+`MOTION` in your terminal when somebody walks past it. The point of the exercise is
+not the sensor: it is the chain between the two. A device in the room talks to the
+manufacturer's cloud, the cloud exposes a REST API, and your script authenticates
+against that API and asks it a question. Every commercial IoT product you own works
+this way.
+
+---
+
+## Before you start
+
+**Wi-Fi.** The sensor needs a **2.4 GHz network with a single shared WPA2 password**, and that
+rules out every network the university runs.
+
+- **Eduroam will not work.** It is WPA2-Enterprise: each user authenticates individually with their
+  own credentials. The sensor has no way to do that.
+- **GenuaWiFi, and any other guest network, will not work either.** These sit behind a captive
+  portal — a web page you have to accept or log into. The sensor has no browser and no screen, so
+  it joins the network and then sits there with no connectivity, which looks exactly like a broken
+  sensor.
+- Use a **phone hotspot** instead. On an iPhone you must turn on **Settings → Personal Hotspot →
+  Maximize Compatibility**, otherwise the hotspot runs at 5 GHz and the sensor will never find it.
+  On Android, check that the hotspot band is set to 2.4 GHz.
+- The phone providing the hotspot must stay on for the whole session.
+
+This is worth a moment's thought, because it is not a quirk of this exercise. A device with no
+screen and no browser can only join a network that has one shared password and no login page — which
+excludes almost every network operated by a university, a hospital, a hotel or an airport. Those are
+precisely the buildings where you would want to deploy ambient sensing, and the network is the first
+thing that stops you.
+
+**Do not follow Home Assistant tutorials.** Home Assistant stopped requiring a Tuya cloud project
+and now uses a user code taken from the app. Those guides are correct for Home Assistant and
+useless here — and they are what a search engine will show you first.
+
+---
 
 ## Prerequisites
-- Python 3.7 or higher.
-- A Tuya Cloud Developer account (register at Tuya IoT Platform).
-- PIR Motion Sensor or other Tuya-supported device linked to the Tuya Smart app (available for Android and iOS).
-- A 2.4GHz Wi-Fi network secured with a WPA2 password.
 
-## Step 1: Download the Tuya Smart App
-To manage your Tuya-compatible devices, download the Tuya Smart app:
-- For Android devices: Download from the [Google Play Store](https://play.google.com/store/apps/details?id=com.tuya.smart&hl=it).
--	For iOS devices: Download from the [App Store](https://apps.apple.com/us/app/tuya-smart/id1034649547).
+- Python 3.9 or later.
+- A phone with the Tuya app.
+- A Tuya developer account (created in step 2).
+- A Tuya PIR motion sensor.
 
-## Step 2: Create a Tuya IoT Account
-1.	Visit the [Tuya Developer Platform website](https://iot.tuya.com).
-2.	Create an account or log in if you already have one.
-3.	Create a new cloud project with the following details:
-    - Name: Your project name.
-    - Description: A brief description of your project.
-    - Industry: Education/Campus.
-    - Development Method: Smart Home.
-    - Data Center: Central Europe (to match the App Data Center).
+---
 
 ## Step 3: Authorize API Services
 In your cloud project, authorize the following API services:
@@ -30,86 +55,233 @@ In your cloud project, authorize the following API services:
 - Smart Home Basic Service: Offers essential functionalities for managing smart home devices.
 - Device Status Notification: Sends real-time notifications on device status updates.
 - Device Pool Management: Allows obtaining information about devices, including current status and properties.
+=======
+## Step 1 — Install the mobile app
+>>>>>>> 0516cba (- poll every 5 s by default, with --interval and --csv)
 
+Install **Tuya**, published by Tuya Smart Inc. The app used to be called *Tuya Smart* and
+is now listed as **"Tuya: Smart Life, Smart Living"** — same app, same publisher, renamed.
 
-## Step 4: Set Up the PIR Motion Sensor
-1.	Open the Tuya Smart app on your phone and create an account (or log in to an existing one).
-2.	Connect the PIR Motion Sensor to a power source and turn it on.
-3.	Press and hold the side button until the green light blinks, indicating pairing mode.
-4.	Add the sensor as a new device in the app, connecting it to a 2.4GHz Wi-Fi network.
-5.	Set the work mode to “OnlyLight” to prevent it from sounding.
+- Android: <https://play.google.com/store/apps/details?id=com.tuya.smart>
+- iOS: <https://apps.apple.com/us/app/tuya-smart/id1034649547>
 
-## Step 5: Link the Sensor to the Cloud Project
-1.	In the [Tuya Developer Platform](https://platform.tuya.com), go to your project and navigate to Devices → Link App Account → Add App Account.
-2.	In the Tuya Smart app, go to “Me” at the bottom right of the screen and tap the QR code icon at the top.
-3.	Scan the QR code displayed on the Tuya Developer Platform to link the app with the cloud project.
-4.	Verify that the sensor is visible in the cloud project and has been assigned an ID.
+> **Careful: there is also a separate app called "SmartLife — Smart Living", published by
+> Volcano Technology.** It is not the same app. If you pair the sensor with that one, the login
+> in `main.py` will fail, because the script authenticates with the schema `"tuyaSmart"`. If you
+> have already paired with Smart Life, change `"tuyaSmart"` to `"smartlife"` in `main.py` rather
+> than starting over.
 
-## Step 6: Set Up the Tuya Cloud Interface Project
-### Clone the Repository
-Clone this repository in a folder of your choice by navigating to the folder and executing the following command in a terminal:
+Create an account in the app and **note which country you selected** — you will need it
+later as `COUNTRY_CODE`.
+
+---
+
+## Step 2 — Create a cloud project
+
+Go to **<https://platform.tuya.com>** and register or log in.
+(The older address `iot.tuya.com` still works and shows the same platform.)
+
+Create a **Cloud Project** with:
+
+| Field | Value |
+|---|---|
+| Project name | anything |
+| Description | anything |
+| Industry | anything that fits — e.g. Education/Campus. It does not affect the API. |
+| **Development Method** | **Smart Home** |
+| **Data Center** | **Central Europe** |
+
+Two of these matter.
+
+**Development Method** has two options, Custom and Smart Home. Choose **Smart Home**: it is
+the one that lets you link a mobile-app account and read the devices already paired in it.
+Tuya's own description of this option now says "link devices with your Smart Life app" —
+ignore the app name, the option is the right one for the Tuya app too.
+
+**Data Center** must match the region of the account you created in the app in step 1, and
+it must match `ENDPOINT` in your `.env` later. If they disagree, everything appears to work
+until the device list comes back empty. Central Europe corresponds to
+`https://openapi.tuyaeu.com`.
+
+You do not need to touch anything else here. Tuya has already authorised the API services a
+Smart Home project needs, and that default set is enough for this exercise — ignore any guide
+that tells you to subscribe to a list of extra ones. The one thing you do have to do is start
+their free trial.
+
+### Start the free trial
+
+Go to **Cloud → Cloud Services → My Services**. For each service your project is subscribed to,
+**start the free trial**. It is free and takes a moment, and until you do it every request comes
+back as `No permissions`.
+
+The trial allows **26,000 API calls and 68,000 messages a month**, with no overage billing: when the
+allowance runs out the service is suspended until the month rolls over.
+
+That is why `main.py` polls every **5 seconds** by default rather than every second. One reading per
+second is 86,400 calls a day — enough to burn a month's allowance overnight, from a single script
+somebody forgot to close.
+
+---
+
+## Step 3 — Pair the sensor
+
+1. Open the app and make sure you are on the hotspot described above.
+2. Power the sensor on.
+3. Hold the side button until the green light blinks: that is pairing mode.
+4. In the app, add a new device and give it the hotspot's name and password.
+5. Set the work mode to **OnlyLight**, so it does not beep.
+
+---
+
+## Step 4 — Link the app account to the cloud project
+
+1. In your cloud project go to **Devices** → **Link App Account** → **Add App Account**.
+   Depending on the version of the console this button may read **Link Tuya App Account**
+   or **Link My App**, and the second one **Add Apps**. It is the same thing.
+2. A QR code appears.
+3. In the mobile app tap **Me** (bottom right), then the **QR-code icon** at the top right,
+   and scan it.
+4. Confirm on the phone.
+5. Back in the console, under **All Devices**, your sensor should now be listed. Copy its
+   **Device ID**.
+
+If the list is empty, the data centre of the project and the region of the app account do
+not match. That is almost always the cause.
+
+---
+
+## Step 5 — Set up the project
+
 ```bash
-git clone https://github.com/yourusername/tuya_cloud_interface.git
+git clone https://github.com/lucregrassi/tuya_cloud_interface.git
 cd tuya_cloud_interface
 ```
-### Create a .env file
-In the root directory of the project, create a file named .env and add the following content:
+
+### Create a virtual environment
+
+Do not skip this. On recent Ubuntu, Debian and macOS with Homebrew Python, installing
+packages system-wide is refused outright with `error: externally-managed-environment`.
+
 ```bash
-ACCESS_ID=your_access_id
-ACCESS_SECRET=your_access_secret
-ENDPOINT=https://openapi.tuyaeu.com  # Adjust based on your data center
-DEVICE_ID=your_device_id
-USERNAME=your_tuya_app_email
-PASSWORD=your_tuya_app_password
-COUNTRY_CODE=+XX  # Your country code (e.g., +39 for Italy)
-```
-Make sure to replace the placeholders with your actual data:
- ```bash
-ACCESS_ID and ACCESS_SECRET: Retrieve these from the Overview tab in your Tuya Cloud project.
-ENDPOINT: Use https://openapi.tuyaeu.com for Central Europe. Adjust if your data center is different.
-DEVICE_ID: Visible in the Devices section of your Cloud Project.
-USERNAME, PASSWORD, COUNTRY_CODE: Credentials for your Tuya Smart app account.
- ```
-### Install the Dependencies
-To install the libraries required to run the script, execute the following command in a terminal:
-```bash
+python3 -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-## Step 7: Test the Script
-1.	Run the script to verify if the sensor data is successfully retrieved:
-    ```bash
-    python3 main.py
-    ```
+Optionally, for the spoken "Motion detected!" announcement:
 
-2.	If successful, the script will return a message similar to the following:
-    ```bash
-    {
-    "result": [
-      {"code": "pir", "value": "pir"},
-      {"code": "battery_percentage", "value": 0}
-    ],
-    "success": true,
-    "t": 1733318804621,
-    "tid": "67c94acbb24311ef828e8aa4893defa6"
-    }
-    ```
+```bash
+pip install -r requirements-optional.txt
+```
 
-    The "result" field contains the key information from the PIR motion sensor:
-  	- "code": "pir", "value": "pir" indicates that motion has been detected.
-  	- "code": "pir", "value": "none" indicates no motion detected.
-  	- "code": "battery_percentage", "value": 0 reflects the current battery level of the sensor (in this case, 0%).
-    This output confirms that the sensor is operational and able to detect motion in real-time. The script can now be expanded to process this data in a way that meets your specific requirements.
+It is optional on purpose. On macOS it installs about 170 packages, and on Linux it also
+needs the system package `espeak-ng`. The script detects that it is missing and carries on
+without it.
 
-## Conclusion 
-The data retrieved from the sensor opens up a variety of possibilities for practical applications, such as:
-- Storing Data in a Database: Log motion detection events with timestamps for analysis, reporting, or compliance tracking.
-- Triggering Notifications: Set up real-time alerts (e.g., push notifications, SMS, or emails) to notify users when motion is detected.
-- Home Automation: Use motion detection to automate smart home actions, such as turning on lights, adjusting thermostats, or activating security cameras.
-- Behavioral Analytics: Analyze motion trends over time to gain insights into space usage, identify potential security risks, or optimize facility management.
-- Machine Learning Applications: Leverage the data to train predictive models for tasks like anomaly detection, predictive maintenance, or optimizing smart environment responses.
+### Create your .env
 
-Feel free to extend the script to incorporate these functionalities or adapt it to your specific use case. For further support and inspiration, explore the [Tuya Developer Documentation](https://developer.tuya.com/en/docs/iot).
+```bash
+cp .env.example .env
+```
 
-Happy coding! 🚀
+Then fill it in:
 
+| Variable | Where it comes from |
+|---|---|
+| `ACCESS_ID`, `ACCESS_SECRET` | the **Overview** page of your cloud project |
+| `ENDPOINT` | the data centre you chose — Central Europe is `https://openapi.tuyaeu.com` |
+| `DEVICE_ID` | the **Devices** page, after step 4 |
+| `TUYA_USERNAME`, `TUYA_PASSWORD` | the account of the **mobile app**, not of the developer platform |
+| `COUNTRY_CODE` | the country you chose in the app, **without the plus sign** — Italy is `39` |
+
+Two things that cost people twenty minutes each:
+
+- The username and password are the **app** ones. The developer-platform login is a
+  different account and will be rejected.
+- Tuya wants the country code as `39`, not `+39`. `main.py` strips the plus for you, but
+  every other example you find online will not.
+
+`.env` is in `.gitignore`. Keep it that way: those four values are enough for anyone to
+read your devices.
+
+---
+
+## Step 6 — Run it
+
+```bash
+python3 main.py
+```
+
+```
+Connected to https://openapi.tuyaeu.com — polling every 5 s. Ctrl-C to stop.
+
+This device reports: ['pir', 'battery_percentage', 'battery_state']
+
+14:32:07     --      battery 87%   [1 API calls this run]
+14:32:12   MOTION    battery 87%   [2 API calls this run]
+```
+
+The first line after connecting prints **the codes this particular device actually
+reports**. Not every PIR model calls motion `pir`; some report `presence_state`. If yours
+does, that line is where you find out, instead of watching a script that prints nothing.
+
+The call counter is there so that you can watch your monthly quota being spent.
+
+### Options
+
+```bash
+python3 main.py --interval 1          # one reading per second
+python3 main.py --csv motion.csv      # also append every reading to a CSV file
+```
+
+---
+
+## When it does not work
+
+| What you see | What it is |
+|---|---|
+| `Login failed: ... (code 1106)` | permission denied — usually the app/developer account mix-up, or a data centre that does not match |
+| `Login failed` with a signature or token error | a trailing space in `ACCESS_ID` or `ACCESS_SECRET`, or the wrong `ENDPOINT` |
+| The device list in the console is empty | the project's data centre and the app account's region disagree |
+| The sensor never leaves pairing mode | the network is 5 GHz, or it is eduroam or a guest network with a captive portal |
+| `Request failed: No permissions ...` | you have not started the free trial for the services — see step 2 |
+| `Request failed` after heavy use | the monthly call allowance ran out; it resets next month |
+| `This device reports: [...]` with no `pir` | your sensor model uses a different code; change it in `main.py` |
+| `error: externally-managed-environment` | you skipped the virtual environment |
+
+Two notes on the library, in case you go looking:
+
+- The SDK's real-time (MQTT) module, `TuyaOpenMQ`, is **broken with paho-mqtt 2.x**, which
+  is what pip installs today. This exercise only uses REST, so it does not affect us — but
+  do not be surprised if the MQTT examples in Tuya's documentation fail.
+- Older examples call `openapi.login()`. That method no longer exists; the current one is
+  `openapi.connect()`, which is what `main.py` uses.
+
+---
+
+## What you have actually built
+
+```
+PIR sensor  ──Wi-Fi──>  Tuya cloud  ──HTTPS/REST──>  main.py  ──>  your terminal
+                            ▲
+                            │ the app account you linked with a QR code
+                       Tuya mobile app
+```
+
+Worth noticing before you close the terminal:
+
+- **The sensor never talks to your computer.** Everything goes through a server you do not
+  own, in a country you did not choose. If it goes down, or the trial expires, your sensor
+  is a plastic box.
+- **You are polling.** You ask the cloud "anything new?" every few seconds, and almost every
+  answer is "no". The alternative is push — the cloud tells you when something changes —
+  which costs no quota while nothing happens and needs an address the cloud can reach.
+- **Your credentials are a key to the room.** With those four values, anyone can read when
+  you are in it.
+
+---
+
+## Author
+
+**Lucrezia Grassi** — <lucrezia.grassi@unige.it>
+Ambient Intelligence, MSc in Robotics Engineering, University of Genoa.

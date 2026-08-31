@@ -18,10 +18,9 @@ rules out every network the university runs.
 
 - **Eduroam will not work.** It is WPA2-Enterprise: each user authenticates individually with their
   own credentials. The sensor has no way to do that.
-- **GenuaWiFi, and any other guest network, will not work either.** These sit behind a captive
-  portal — a web page you have to accept or log into. The sensor has no browser and no screen, so
-  it joins the network and then sits there with no connectivity, which looks exactly like a broken
-  sensor.
+- **Guest networks such as GenuaWiFi will not work either.** These sit behind a captive portal — a
+  web page you have to accept or log into. The sensor has no browser and no screen, so it joins the
+  network and then sits there with no connectivity, which looks exactly like a broken sensor.
 - Use a **phone hotspot** instead. On an iPhone you must turn on **Settings → Personal Hotspot →
   Maximize Compatibility**, otherwise the hotspot runs at 5 GHz and the sensor will never find it.
   On Android, check that the hotspot band is set to 2.4 GHz.

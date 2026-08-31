@@ -26,15 +26,10 @@ rules out every network the university runs.
   On Android, check that the hotspot band is set to 2.4 GHz.
 - The phone providing the hotspot must stay on for the whole session.
 
-This is worth a moment's thought, because it is not a quirk of this exercise. A device with no
-screen and no browser can only join a network that has one shared password and no login page — which
+A device with no screen and no browser can only join a network that has one shared password and no login page — which
 excludes almost every network operated by a university, a hospital, a hotel or an airport. Those are
 precisely the buildings where you would want to deploy ambient sensing, and the network is the first
 thing that stops you.
-
-**Do not follow Home Assistant tutorials.** Home Assistant stopped requiring a Tuya cloud project
-and now uses a user code taken from the app. Those guides are correct for Home Assistant and
-useless here — and they are what a search engine will show you first.
 
 ---
 

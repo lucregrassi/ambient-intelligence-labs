@@ -51,19 +51,12 @@ In your cloud project, authorize the following API services:
 - Device Pool Management: Allows obtaining information about devices, including current status and properties.
 =======
 ## Step 1 — Install the mobile app
->>>>>>> 0516cba (- poll every 5 s by default, with --interval and --csv)
 
 Install **Tuya**, published by Tuya Smart Inc. The app used to be called *Tuya Smart* and
 is now listed as **"Tuya: Smart Life, Smart Living"** — same app, same publisher, renamed.
 
 - Android: <https://play.google.com/store/apps/details?id=com.tuya.smart>
 - iOS: <https://apps.apple.com/us/app/tuya-smart/id1034649547>
-
-> **Careful: there is also a separate app called "SmartLife — Smart Living", published by
-> Volcano Technology.** It is not the same app. If you pair the sensor with that one, the login
-> in `main.py` will fail, because the script authenticates with the schema `"tuyaSmart"`. If you
-> have already paired with Smart Life, change `"tuyaSmart"` to `"smartlife"` in `main.py` rather
-> than starting over.
 
 Create an account in the app and **note which country you selected** — you will need it
 later as `COUNTRY_CODE`.

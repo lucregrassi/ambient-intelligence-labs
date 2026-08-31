@@ -42,16 +42,6 @@ thing that stops you.
 
 ---
 
-## Step 3: Authorize API Services
-In your cloud project, authorize the following API services:
-- IoT Core: Provides basic functionalities such as device management, real-time communication, and data collection.
-- Authorization Token Management: Manages authentication and authorization for accessing other APIs.
-- Smart Home Basic Service: Offers essential functionalities for managing smart home devices.
-- Device Status Notification: Sends real-time notifications on device status updates.
-- Device Pool Management: Allows obtaining information about devices, including current status and properties.
-
----
-
 ## Step 1 — Install the mobile app
 
 Install **Tuya**, published by Tuya Smart Inc. The app used to be called *Tuya Smart* and
@@ -80,7 +70,7 @@ Create a **Cloud Project** with:
 | **Development Method** | **Smart Home** |
 | **Data Center** | **Central Europe** |
 
-Two of these matter.
+The first three are yours to choose. The last two are not.
 
 **Development Method** has two options, Custom and Smart Home. Choose **Smart Home**: it is
 the one that lets you link a mobile-app account and read the devices already paired in it.
@@ -225,39 +215,7 @@ python3 main.py --csv motion.csv      # also append every reading to a CSV file
 
 ---
 
-## When it does not work
-
-| What you see | What it is |
-|---|---|
-| `Login failed: ... (code 1106)` | permission denied — usually the app/developer account mix-up, or a data centre that does not match |
-| `Login failed` with a signature or token error | a trailing space in `ACCESS_ID` or `ACCESS_SECRET`, or the wrong `ENDPOINT` |
-| The device list in the console is empty | the project's data centre and the app account's region disagree |
-| The sensor never leaves pairing mode | the network is 5 GHz, or it is eduroam or a guest network with a captive portal |
-| `Request failed: No permissions ...` | you have not started the free trial for the services — see step 2 |
-| `Request failed` after heavy use | the monthly call allowance ran out; it resets next month |
-| `This device reports: [...]` with no `pir` | your sensor model uses a different code; change it in `main.py` |
-| `error: externally-managed-environment` | you skipped the virtual environment |
-
-Two notes on the library, in case you go looking:
-
-- The SDK's real-time (MQTT) module, `TuyaOpenMQ`, is **broken with paho-mqtt 2.x**, which
-  is what pip installs today. This exercise only uses REST, so it does not affect us — but
-  do not be surprised if the MQTT examples in Tuya's documentation fail.
-- Older examples call `openapi.login()`. That method no longer exists; the current one is
-  `openapi.connect()`, which is what `main.py` uses.
-
----
-
-## What you have actually built
-
-```
-PIR sensor  ──Wi-Fi──>  Tuya cloud  ──HTTPS/REST──>  main.py  ──>  your terminal
-                            ▲
-                            │ the app account you linked with a QR code
-                       Tuya mobile app
-```
-
-Worth noticing before you close the terminal:
+Three things worth noticing:
 
 - **The sensor never talks to your computer.** Everything goes through a server you do not
   own, in a country you did not choose. If it goes down, or the trial expires, your sensor

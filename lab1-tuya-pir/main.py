@@ -79,6 +79,53 @@ if not response.get("success"):
 
 print(f"Connected to {ENDPOINT} — polling every {args.interval:g} s. Ctrl-C to stop.\n")
 
+use_shadow = True
+
+
+def read_device():
+    """Return {code: (value, time_ms or None)}, or None if the request failed.
+
+    The shadow endpoint gives each property together with the moment it was last
+    updated, which is the only way to tell a live reading from a stale one. If the
+    project cannot call it, fall back to the plain status endpoint, which has no times.
+    """
+    global use_shadow
+    if use_shadow:
+        r = openapi.get(f"/v2.0/cloud/thing/{DEVICE_ID}/shadow/properties")
+        if r.get("success"):
+            return {q["code"]: (q["value"], q.get("time")) for q in r["result"]["properties"]}
+        use_shadow = False
+    r = openapi.get(f"/v1.0/iot-03/devices/{DEVICE_ID}/status")
+    if r.get("success"):
+        return {i["code"]: (i["value"], None) for i in r["result"]}
+    print(f"Request failed: {r.get('msg')} (code {r.get('code')})")
+    return None
+
+
+def read_online_status():
+    """Return Tuya's online flag, or None if the check is unavailable."""
+    r = openapi.get(f"/v1.1/iot-03/devices/{DEVICE_ID}")
+    if not r.get("success"):
+        print(f"Online check failed: {r.get('msg')} (code {r.get('code')})")
+        return None
+    return (r.get("result") or {}).get("online")
+
+
+def age(ms):
+    """How long ago the sensor reported this value."""
+    if ms is None:
+        return ""
+    seconds = time.time() - ms / 1000
+    if seconds < 10:
+        return "(just now)"
+    if seconds < 90:
+        return f"({seconds:.0f} s ago)"
+    if seconds < 5400:
+        return f"({seconds / 60:.0f} min ago)"
+    if seconds < 86400:
+        return f"({seconds / 3600:.0f} h ago)"
+    return f"({seconds / 86400:.0f} days ago)"
+
 writer = None
 csvfile = None
 if args.csv:
@@ -92,30 +139,47 @@ previous_motion_status = None
 first_reading = True
 calls = 0
 
+# Checking this separate Tuya endpoint every 30 seconds avoids doubling every
+# polling request while still reporting a disconnection reasonably quickly.
+ONLINE_CHECK_INTERVAL = 30.0
+last_online_check = 0.0
+device_online = None
+
 try:
     while True:
         try:
-            # One GET request = one API call against your monthly quota.
-            response = openapi.get(f"/v1.0/iot-03/devices/{DEVICE_ID}/status")
-            calls += 1
+            now = time.monotonic()
+            if now - last_online_check >= ONLINE_CHECK_INTERVAL:
+                device_online = read_online_status()
+                calls += 1
+                last_online_check = now
 
-            if not response.get("success"):
-                print(f"Request failed: {response.get('msg')} (code {response.get('code')})")
+            if device_online is False:
+                stamp = datetime.now().strftime("%H:%M:%S")
+                print(f"{stamp}  {Fore.YELLOW}OFFLINE{Style.RESET_ALL}  "
+                      f"sensor not connected to Tuya   "
+                      f"[{calls} API calls this run]")
                 time.sleep(args.interval)
                 continue
 
-            status = {item["code"]: item["value"] for item in response["result"]}
+            # One GET request = one API call against your monthly quota.
+            status = read_device()
+            calls += 1
+
+            if status is None:
+                time.sleep(args.interval)
+                continue
 
             # Not every PIR model calls motion "pir", so show the codes once.
             if first_reading:
                 print(f"This device reports: {list(status.keys())}\n")
                 first_reading = False
 
-            motion_status = status.get("pir")
-            battery = status.get("battery_percentage")
+            motion_status, reported_at = status.get("pir_state", (None, None))
+            battery = status.get("battery_percentage", (None, None))[0]
 
             if motion_status is None:
-                print("No 'pir' field in the response — check the codes printed above.")
+                print("No 'pir_state' field in the response — check the codes printed above.")
                 time.sleep(args.interval)
                 continue
 
@@ -123,7 +187,8 @@ try:
             colour = Fore.GREEN if motion_status == "pir" else Fore.RED
             label = "MOTION" if motion_status == "pir" else "  --  "
             print(f"{stamp}  {colour}{label}{Style.RESET_ALL}   "
-                  f"battery {battery}%   [{calls} API calls this run]")
+                  f"battery {battery}%   {age(reported_at):<16} "
+                  f"[{calls} API calls this run]")
 
             if writer:
                 writer.writerow([datetime.now().isoformat(timespec="seconds"),

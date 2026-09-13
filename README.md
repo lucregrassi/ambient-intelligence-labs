@@ -25,3 +25,8 @@ its instructions say which download to take.
 When you open a Colab notebook from here, you are looking at a copy. **Do `File → Save a copy in Drive`
 before you start**, otherwise your work disappears when you close the tab. You cannot modify anything in
 this repository, so experiment freely.
+
+## Author
+
+**Lucrezia Grassi** — <lucrezia.grassi@unige.it>
+Ambient Intelligence, MSc in Robotics Engineering, University of Genoa.

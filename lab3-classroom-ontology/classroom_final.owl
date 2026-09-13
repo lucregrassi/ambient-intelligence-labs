@@ -1,0 +1,696 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.unige.it/ami/classroom.owl#"
+     xml:base="http://www.unige.it/ami/classroom.owl"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+     xmlns:swrlb="http://www.w3.org/2003/11/swrlb#">
+    <owl:Ontology rdf:about="http://www.unige.it/ami/classroom.owl"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#canSee -->
+
+    <owl:ObjectProperty rdf:about="http://www.unige.it/ami/classroom.owl#canSee">
+        <rdfs:domain rdf:resource="http://www.unige.it/ami/classroom.owl#Person"/>
+        <rdfs:range rdf:resource="http://www.unige.it/ami/classroom.owl#Whiteboard"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#equippedWith -->
+
+    <owl:ObjectProperty rdf:about="http://www.unige.it/ami/classroom.owl#equippedWith">
+        <owl:inverseOf rdf:resource="http://www.unige.it/ami/classroom.owl#placedIn"/>
+        <rdfs:domain rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#hosts -->
+
+    <owl:ObjectProperty rdf:about="http://www.unige.it/ami/classroom.owl#hosts">
+        <owl:inverseOf rdf:resource="http://www.unige.it/ami/classroom.owl#isIn"/>
+        <rdfs:domain rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+        <rdfs:range rdf:resource="http://www.unige.it/ami/classroom.owl#Person"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#isIn -->
+
+    <owl:ObjectProperty rdf:about="http://www.unige.it/ami/classroom.owl#isIn"/>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#placedIn -->
+
+    <owl:ObjectProperty rdf:about="http://www.unige.it/ami/classroom.owl#placedIn"/>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#seatedAt -->
+
+    <owl:ObjectProperty rdf:about="http://www.unige.it/ami/classroom.owl#seatedAt">
+        <rdfs:domain rdf:resource="http://www.unige.it/ami/classroom.owl#Person"/>
+        <rdfs:range rdf:resource="http://www.unige.it/ami/classroom.owl#Desk"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#usedFor -->
+
+    <owl:ObjectProperty rdf:about="http://www.unige.it/ami/classroom.owl#usedFor">
+        <rdfs:domain rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+        <rdfs:range rdf:resource="http://www.unige.it/ami/classroom.owl#Activity"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#hasHeadCount -->
+
+    <owl:DatatypeProperty rdf:about="http://www.unige.it/ami/classroom.owl#hasHeadCount">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Activity -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Activity">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Chair -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Chair">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Furniture"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Classroom -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Classroom">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Corridor -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Corridor">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#CrowdedRoom -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#CrowdedRoom">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Room"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.unige.it/ami/classroom.owl#hosts"/>
+                        <owl:minQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">4</owl:minQualifiedCardinality>
+                        <owl:onClass rdf:resource="http://www.unige.it/ami/classroom.owl#Person"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Desk -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Desk">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Furniture"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Device -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Device">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Exam -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Exam">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Activity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#ExamRoom -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#ExamRoom">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Room"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.unige.it/ami/classroom.owl#usedFor"/>
+                        <owl:someValuesFrom rdf:resource="http://www.unige.it/ami/classroom.owl#Exam"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Furniture -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Furniture">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#GroupWork -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#GroupWork">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Activity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Lecture -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Lecture">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Activity"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Lecturer -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Lecturer">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Person"/>
+        <owl:disjointWith rdf:resource="http://www.unige.it/ami/classroom.owl#Student"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#MonitoredRoom -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#MonitoredRoom">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Room"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.unige.it/ami/classroom.owl#equippedWith"/>
+                        <owl:someValuesFrom rdf:resource="http://www.unige.it/ami/classroom.owl#PresenceSensor"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#OccupiedRoom -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#OccupiedRoom">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Room"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.unige.it/ami/classroom.owl#hosts"/>
+                        <owl:someValuesFrom rdf:resource="http://www.unige.it/ami/classroom.owl#Person"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Office -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Office">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Person -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Person">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#PresenceSensor -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#PresenceSensor">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Device"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Projector -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Projector">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Device"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Room -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Room">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Student -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Student">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#TeachingRoom -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#TeachingRoom">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Room"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.unige.it/ami/classroom.owl#equippedWith"/>
+                        <owl:someValuesFrom rdf:resource="http://www.unige.it/ami/classroom.owl#Projector"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.unige.it/ami/classroom.owl#equippedWith"/>
+                        <owl:someValuesFrom rdf:resource="http://www.unige.it/ami/classroom.owl#Whiteboard"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#Whiteboard -->
+
+    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Whiteboard">
+        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Furniture"/>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#alice -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#alice">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Student"/>
+        <seatedAt rdf:resource="http://www.unige.it/ami/classroom.owl#desk_1"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#ami_lecture -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#ami_lecture">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Lecture"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#bruno -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#bruno">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Student"/>
+        <seatedAt rdf:resource="http://www.unige.it/ami/classroom.owl#desk_2"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#chiara -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#chiara">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Student"/>
+        <seatedAt rdf:resource="http://www.unige.it/ami/classroom.owl#desk_3"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#corridor_first_floor -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#corridor_first_floor">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Corridor"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#dario -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#dario">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Student"/>
+        <seatedAt rdf:resource="http://www.unige.it/ami/classroom.owl#desk_4"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#desk_1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#desk_1">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Desk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#desk_2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#desk_2">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Desk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#desk_3 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#desk_3">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Desk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#desk_4 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#desk_4">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Desk"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#e1 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#e1">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Classroom"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#e2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#e2">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Classroom"/>
+        <equippedWith rdf:resource="http://www.unige.it/ami/classroom.owl#desk_1"/>
+        <equippedWith rdf:resource="http://www.unige.it/ami/classroom.owl#desk_2"/>
+        <equippedWith rdf:resource="http://www.unige.it/ami/classroom.owl#desk_3"/>
+        <equippedWith rdf:resource="http://www.unige.it/ami/classroom.owl#desk_4"/>
+        <equippedWith rdf:resource="http://www.unige.it/ami/classroom.owl#pir_e2"/>
+        <equippedWith rdf:resource="http://www.unige.it/ami/classroom.owl#projector_e2"/>
+        <equippedWith rdf:resource="http://www.unige.it/ami/classroom.owl#whiteboard_e2"/>
+        <usedFor rdf:resource="http://www.unige.it/ami/classroom.owl#ami_lecture"/>
+        <hasHeadCount rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">24</hasHeadCount>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#lucrezia -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#lucrezia">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Lecturer"/>
+        <isIn rdf:resource="http://www.unige.it/ami/classroom.owl#e2"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#pir_e2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#pir_e2">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#PresenceSensor"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#projector_e2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#projector_e2">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Projector"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.unige.it/ami/classroom.owl#whiteboard_e2 -->
+
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#whiteboard_e2">
+        <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Whiteboard"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDisjointClasses"/>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Activity"/>
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Device"/>
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Furniture"/>
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Person"/>
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Room"/>
+        </owl:members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AllDifferent"/>
+        <owl:distinctMembers rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#alice"/>
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#bruno"/>
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#chiara"/>
+            <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#dario"/>
+        </owl:distinctMembers>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Rules
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description rdf:about="urn:swrl#s">
+        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#Variable"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="urn:swrl#d">
+        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#Variable"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="urn:swrl#r">
+        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#Variable"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="urn:swrl#p">
+        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#Variable"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="urn:swrl#w">
+        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#Variable"/>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#Imp"/>
+        <swrl:body>
+            <rdf:Description>
+                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#Student"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#s"/>
+                    </rdf:Description>
+                </rdf:first>
+                <rdf:rest>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                        <rdf:first>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#IndividualPropertyAtom"/>
+                                <swrl:propertyPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#seatedAt"/>
+                                <swrl:argument1 rdf:resource="urn:swrl#s"/>
+                                <swrl:argument2 rdf:resource="urn:swrl#d"/>
+                            </rdf:Description>
+                        </rdf:first>
+                        <rdf:rest>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                                <rdf:first>
+                                    <rdf:Description>
+                                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#IndividualPropertyAtom"/>
+                                        <swrl:propertyPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#placedIn"/>
+                                        <swrl:argument1 rdf:resource="urn:swrl#d"/>
+                                        <swrl:argument2 rdf:resource="urn:swrl#r"/>
+                                    </rdf:Description>
+                                </rdf:first>
+                                <rdf:rest>
+                                    <rdf:Description>
+                                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                                        <rdf:first>
+                                            <rdf:Description>
+                                                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#ClassAtom"/>
+                                                <swrl:classPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
+                                                <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                                            </rdf:Description>
+                                        </rdf:first>
+                                        <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                                    </rdf:Description>
+                                </rdf:rest>
+                            </rdf:Description>
+                        </rdf:rest>
+                    </rdf:Description>
+                </rdf:rest>
+            </rdf:Description>
+        </swrl:body>
+        <swrl:head>
+            <rdf:Description>
+                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#IndividualPropertyAtom"/>
+                        <swrl:propertyPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#hosts"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                        <swrl:argument2 rdf:resource="urn:swrl#s"/>
+                    </rdf:Description>
+                </rdf:first>
+                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </rdf:Description>
+        </swrl:head>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#Imp"/>
+        <swrl:body>
+            <rdf:Description>
+                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#IndividualPropertyAtom"/>
+                        <swrl:propertyPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#hosts"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                        <swrl:argument2 rdf:resource="urn:swrl#p"/>
+                    </rdf:Description>
+                </rdf:first>
+                <rdf:rest>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                        <rdf:first>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#IndividualPropertyAtom"/>
+                                <swrl:propertyPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#equippedWith"/>
+                                <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                                <swrl:argument2 rdf:resource="urn:swrl#w"/>
+                            </rdf:Description>
+                        </rdf:first>
+                        <rdf:rest>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                                <rdf:first>
+                                    <rdf:Description>
+                                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#ClassAtom"/>
+                                        <swrl:classPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#Whiteboard"/>
+                                        <swrl:argument1 rdf:resource="urn:swrl#w"/>
+                                    </rdf:Description>
+                                </rdf:first>
+                                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+                            </rdf:Description>
+                        </rdf:rest>
+                    </rdf:Description>
+                </rdf:rest>
+            </rdf:Description>
+        </swrl:body>
+        <swrl:head>
+            <rdf:Description>
+                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#IndividualPropertyAtom"/>
+                        <swrl:propertyPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#canSee"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#p"/>
+                        <swrl:argument2 rdf:resource="urn:swrl#w"/>
+                    </rdf:Description>
+                </rdf:first>
+                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+            </rdf:Description>
+        </swrl:head>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->
+

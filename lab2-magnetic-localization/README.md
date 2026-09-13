@@ -1,6 +1,6 @@
-# Lab 2 — The magnetic corridor
+# Lab 2 — Magnetic indoor localization
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucregrassi/ambient-intelligence-labs/blob/main/lab2-magnetic-corridor/Lab2_magnetic_corridor.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lucregrassi/ambient-intelligence-labs/blob/main/lab2-magnetic-localization/Lab2_magnetic_localization.ipynb)
 
 Click the badge above to open the notebook. It runs in the browser: nothing to download
 and nothing to install, and the recordings it needs are already inside it — so it works

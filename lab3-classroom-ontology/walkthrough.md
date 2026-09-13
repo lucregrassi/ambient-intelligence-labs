@@ -1,4 +1,4 @@
-# Building the classroom ontology — step by step
+# Lab 3 — Classroom ontology in Protégé, step by step
 
 Every step we take in class, so you can follow along during the lab, go over it again
 afterwards, or do the whole thing on your own if you were not there.

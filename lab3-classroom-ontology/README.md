@@ -1,4 +1,4 @@
-# Lab 3 — An ontology of this room
+# Lab 3 — Classroom ontology in Protégé
 
 This lab runs on your own laptop, in **Protégé**. There is no notebook and nothing to open in the
 browser, so the one thing you have to do in advance is install the software.

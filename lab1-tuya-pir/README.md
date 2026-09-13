@@ -1,4 +1,4 @@
-# Tuya Cloud Interface — reading a PIR motion sensor from the cloud
+# Lab 1 — PIR from the Tuya cloud
 
 Ambient Intelligence · University of Genoa
 

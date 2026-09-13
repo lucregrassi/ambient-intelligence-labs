@@ -1,4 +1,4 @@
-# Reading a PIR motion sensor from the cloud — step by step
+# Lab 1 — PIR from the Tuya cloud, step by step
 
 Everything we do together in the laboratory, in order. Nothing here has to be done in advance —
 the accounts are created during the session on purpose, so that you see what each one is for.

@@ -3,8 +3,6 @@
 Lab material for **Ambient Intelligence (80188)**, MSc in Robotics Engineering, University of Genoa.
 Teacher: Lucrezia Grassi — `lucrezia.grassi@unige.it`
 
-Four independent labs. Nothing in one lab depends on the output of another.
-
 | | Lab | What you do | How to open it |
 |---|---|---|---|
 | **1** | [PIR from the Tuya cloud](lab1-tuya-pir/) | Pair a motion sensor, create your own cloud project, and read the sensor over a REST API from Python | [Instructions](lab1-tuya-pir/README.md) — runs on your own laptop, with the sensor |

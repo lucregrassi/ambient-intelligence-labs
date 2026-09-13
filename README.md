@@ -2,7 +2,7 @@
 
 Lab material for **Ambient Intelligence (80188)**, MSc in Robotics Engineering, University of Genoa.
 
-Four independent labs. Nothing in one lab depends on the output of another, so you can work on any of them without having completed the previous one.
+Four independent labs. Nothing in one lab depends on the output of another.
 
 | | Lab | What you do | How to open it |
 |---|---|---|---|
@@ -14,13 +14,12 @@ Four independent labs. Nothing in one lab depends on the output of another, so y
 ## Before you start
 
 **Lab 1** runs on your own laptop and needs Python — the instructions include the virtual-environment
-setup. **Lab 2** runs entirely in Google Colab: nothing to install, and the recordings needed to run it
-are already inside the notebook, so it works even if your own data collection went wrong.
+setup. 
+
+**Lab 2** runs entirely in Google Colab: nothing to install, and the recordings needed to run it
+are already inside the notebook, so it works even if your own data collection went wrong. When you open a Colab notebook from here, you are looking at a copy. **Do `File → Save a copy in Drive` before you start**, otherwise your work disappears when you close the tab. You cannot modify anything in this repository, so experiment freely.
 
 **Lab 3** runs on your own laptop too, in Protégé, which has to be installed **before** the lesson — its instructions say which download to take.
-
-When you open a Colab notebook from here, you are looking at a copy. **Do `File → Save a copy in Drive` before you start**, otherwise your work disappears when you close the tab. You cannot modify anything in
-this repository, so experiment freely.
 
 ## Author
 

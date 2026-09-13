@@ -1,7 +1,5 @@
 # Lab 1 — PIR from the Tuya cloud
 
-Ambient Intelligence · University of Genoa
-
 This guide takes you from the unboxing of a PIR motion sensor to a Python script printing
 `MOTION` in your terminal when somebody walks past it. The point of the exercise is
 not the sensor: it is the chain between the two. A device in the room talks to the

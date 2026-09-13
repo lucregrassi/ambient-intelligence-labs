@@ -12,14 +12,9 @@ hidden behind a click. Try to answer before you open them — that is where the 
 
 ## 01 · Before you start
 
-**Protégé 5.6**, free, from [protege.stanford.edu](https://protege.stanford.edu/). Take the
-installer for your operating system rather than the generic ZIP: the installers come with the
-Java runtime they need. Windows, macOS and Linux run the same application — only the menu bar
-differs, and the keyboard shortcuts use `Ctrl` where macOS uses `⌘`.
-
-**Two files.** [`classroom_start.owl`](classroom_start.owl) is where you begin — the room
-described, and nothing derived. [`classroom_final.owl`](classroom_final.owl) is where you
-arrive. Open a file with **File ▸ Open…**
+Protégé installed and the starting file downloaded — the [README](README.md) says which installer
+to take and how to get the file. [`classroom_final.owl`](classroom_final.owl) is where we arrive:
+open that one first, run the reasoner on it, and you will know what you are aiming at.
 
 > [!NOTE]
 > If classes and properties appear with a leading colon — `:Room`, `:equippedWith` — your

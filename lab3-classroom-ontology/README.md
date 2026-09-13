@@ -20,23 +20,6 @@ the desks, the projector, the whiteboard, the sensor above the door, and the peo
 To get it: click the file name above, then the **Download raw file** button at the top right of the
 file view. Then `File → Open…` in Protégé.
 
-## What we do
-
-**01 — Open the file** and find the room you are sitting in.
-
-**02 — Define three classes.** A teaching room, a monitored room, a crowded one — written as
-definitions, not as labels.
-
-**03 — Run the reasoner** and read what it added to this room. Then look at the empty room next
-door, which stays empty.
-
-**04 — Two rules.** Where your desk is, is where you are. And whoever is in the room can see the
-whiteboard.
-
-**05 — Break it.** One assertion, and every class in the hierarchy turns red at once.
-
-We build everything together, so there is nothing to prepare: bring your charged laptop with Protégé and the ontology file.
-
 ## The step-by-step
 
 [`walkthrough.md`](walkthrough.md) carries every step we take in class: the expressions to type, what has to
@@ -44,4 +27,7 @@ appear after each one, and the questions with the answers hidden behind a click,
 try before you look. Follow it during the lab, or use it to redo the whole thing on your own.
 
 [`classroom_final.owl`](classroom_final.owl) is the state we end at.
+
+We build everything together, so there is nothing to prepare: bring your charged laptop with
+Protégé installed and the ontology file already downloaded.
 

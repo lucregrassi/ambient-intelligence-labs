@@ -4,3 +4,6 @@
 .DS_Store
 *.csv
 *.bak
+
+# il case file del lab 4 è materiale del corso, non dati di uno studente
+!lab4-bayesian-networks/gym_log.csv

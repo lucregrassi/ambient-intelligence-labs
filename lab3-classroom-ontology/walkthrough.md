@@ -59,8 +59,7 @@ OccupiedRoom    Room and (hosts some Person)
 Now **Synchronise reasoner** and look at the individual `e2`.
 
 **What you should see:** three new lines under *Types*, highlighted — **TeachingRoom,
-MonitoredRoom and OccupiedRoom**. Nobody wrote any of them. Then look at `e1`, the empty room
-next door: **it stays a plain Classroom**.
+MonitoredRoom and OccupiedRoom**. Nobody wrote any of them. Then look at `e1`, the neighbouring room: **none of these three memberships follows from its current assertions**. This is not proof that it is empty.
 
 > [!WARNING]
 > If nothing appeared, maybe you wrote the expression in **SubClass Of** instead of
@@ -99,16 +98,13 @@ them — which is the next step.
 
 > [!NOTE]
 > **The number four is not a typo.** A realistic definition of a crowded lecture room would say
-> twenty, and at twenty this file does not finish reasoning: the reasoner has to build models
-> containing twenty distinct individuals, and the cost explodes. This is the
+> twenty, and a larger threshold was slow in the tested setup. Runtime depends on the whole ontology and implementation, not just the threshold. This is the
 > expressiveness-versus-cost trade-off of the previous lecture, on your own laptop. Remember it
 > when you choose cardinalities in your own ontology.
 
 ## 05 · Step 3 — A rule, and the surprise
 
-Some things cannot be said with a class definition. *Whoever sits at a desk that stands in a
-room is in that room* chains two different properties through a middle object, and that is what
-SWRL rules are for.
+The rule below joins information across a desk and room. OWL also supports property chains, but a chain superproperty becomes non-simple and cannot be used in OWL DL cardinality restrictions. This exercise uses the tested SWRL rule together with a cardinality restriction on `hosts`.
 
 Open the rules view — **Window ▸ Views ▸ Ontology views ▸ Rules**, then click where you want the
 panel to sit — and add:
@@ -129,7 +125,7 @@ room is *equipped with* the desk. `placedIn` is the inverse, and the rule gets i
 
 **What you should see** after synchronising: on `e2`, four new `hosts` assertions — **alice,
 bruno, chiara and dario** — derived from where they are sitting. With the lecturer, the room now
-hosts five people. And *CrowdedRoom* **still does not appear.**
+has five Person names as hosts, without a proven count of five distinct people. And *CrowdedRoom* **still does not appear.**
 
 <details>
 <summary><b>The room hosts five people. The definition asks for four. Why is it still not crowded?</b></summary>
@@ -146,8 +142,7 @@ identifiers.
 
 ## 06 · Step 4 — Saying that they are different
 
-In the **Individuals** tab select `alice`, find **Different Individuals** in the Description
-panel, press **+** and add `bruno`, `chiara` and `dario`. Synchronise.
+Assert **DifferentIndividuals(alice bruno chiara dario)** as one axiom, as in the final ontology. If using the individual panel for pairwise assertions, enter all six pairs: alice–bruno, alice–chiara, alice–dario, bruno–chiara, bruno–dario, chiara–dario. Merely making Alice different from the other three is insufficient. Inspect the saved axiom and synchronise.
 
 **What you should see: CrowdedRoom on `e2`** at last. And a second thing, which is easy to miss:
 in the inferred class tree, **CrowdedRoom is no longer directly under Room — it has moved under
@@ -156,8 +151,7 @@ OccupiedRoom**.
 Nobody wrote that. The reasoner worked out that a room hosting at least four people necessarily
 hosts at least one, so every crowded room is an occupied room — **in this model and in any
 other**. Every other conclusion today has been about one room; this one is about the vocabulary
-itself. It is the difference between a list of names and a model, and it is the thing a taxonomy
-can never do for you.
+itself. It is the difference between a list of names and a model, and definitions establish this relationship from the restrictions. A taxonomy can still encode subclass relations and support inheritance.
 
 ## 07 · Step 5 — The second rule, seen from a person
 
@@ -168,8 +162,7 @@ hosts(?r, ?p), equippedWith(?r, ?w), Whiteboard(?w) -> canSee(?p, ?w)
 Synchronise, then stop looking at the room and select `alice` instead.
 
 **What you should see:** the file says exactly one thing about alice — that she sits at desk 1.
-After reasoning she also **is in e2** and **can see the whiteboard**. Two facts about a person,
-derived from a piece of furniture.
+After reasoning she also **is in e2** and **can see the whiteboard**. These are consequences of the model. The `canSee` rule assumes co-location is sufficient for visibility; it does not check occlusion or gaze direction.
 
 This is the point of the whole afternoon for an ambient intelligence system. You never observe
 that someone is in a room. You observe a desk, a chair, a sensor reading. Everything else has to
@@ -180,8 +173,7 @@ code.
 
 Select `desk_1`, and in **Types** add `Person`. A desk that is also a person. Synchronise.
 
-**What you should see: Protégé reports that the ontology is inconsistent**, and every class
-collapses under *Nothing*.
+**What you should see: Protégé reports that the ontology is inconsistent**, with a reasoner-dependent display. Do not rely on a particular colouring or tree layout.
 
 Nothing you wrote was false in itself. You wrote one thing that cannot hold at the same time as
 another: the file declares *Room, Furniture, Device, Person* and *Activity* pairwise disjoint,
@@ -199,29 +191,26 @@ not in a later one.
 
 | step | what you just did | what the reasoner says about `e2` |
 |---|---|---|
-| **0** | Nothing — the file as downloaded | Classroom, and nothing else. The reasoner runs and has nothing to add. |
-| **1** | TeachingRoom, MonitoredRoom, OccupiedRoom | All three appear. `e1` next door gains nothing. |
+| **0** | Nothing — the file as downloaded | Classroom and inherited types; inverse properties may also add relations. None of the four new defined classes exists yet. |
+| **1** | TeachingRoom, MonitoredRoom, OccupiedRoom | All three appear. The three new memberships are not inferred for `e1`; emptiness is unknown. |
 | **2** | CrowdedRoom | No change. `hosts` contains the lecturer only. |
 | **3** | The seat-chain rule | `hosts` gains the four students. Still not crowded. |
 | **4** | Different Individuals | CrowdedRoom appears, and moves under OccupiedRoom in the inferred tree. |
 | **5** | The whiteboard rule | alice is in e2 and can see the whiteboard. |
-| **6** | `desk_1` declared a Person | Inconsistent — everything under Nothing. |
+| **6** | `desk_1` declared a Person | The reasoner reports inconsistency. |
 
-Each of these takes the reasoner well under a second. If yours is thinking for a long time,
-something is wrong with a cardinality, not with your patience.
+Check this sequence with the installed version before class. If reasoning is unexpectedly slow, inspect the whole axiom set, supported features, memory and recent changes; cardinality is one possible cause.
 
 ## 10 · What will go wrong on your own ontology
 
 These are not hypothetical: they are what actually happens, and knowing them saves you an evening.
 
 **The reasoner concludes nothing at all**
-> Your conditions are in *SubClass Of*. Necessary conditions cannot classify anything. Move them
-> to *Equivalent To* and run again. (Second most common cause: you did not synchronise.)
+> Your conditions are in *SubClass Of*. Necessary conditions do not supply the reverse recognition needed here. Use *Equivalent To* only if the condition really is sufficient as well as necessary. (Second most common cause: you did not synchronise.)
 
 **A rule silently does nothing**
 > Check the variable names are spelled identically everywhere in the rule — `?r` in the body and
-> `?r` in the head. And **never name an object property `contains`**: inside a rule it is read as
-> the built-in `swrlb:contains`, and the rule quietly stops meaning what you wrote. This is why
+> `?r` in the head. Also inspect the full IRI of each predicate: ambiguous short names can be confused with built-ins in an editor. This is why
 > the property in our file is called `equippedWith`.
 
 **"A SWRL rule uses a built-in atom…"**
@@ -230,8 +219,7 @@ These are not hypothetical: they are what actually happens, and knowing them sav
 > with `min 4`.
 
 **The reasoner never finishes**
-> Almost always a large cardinality. Keep the numbers small while you are building; raise them
-> only if you have to, and expect to pay for it.
+> Check recent axioms and tool support. Large cardinalities can contribute, but there is no universal runtime threshold. Test incrementally.
 
 **Something classifies that should not**
 > Look at your domains and ranges before blaming the reasoner. Declaring `domain Room` on a

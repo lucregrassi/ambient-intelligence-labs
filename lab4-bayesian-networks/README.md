@@ -18,4 +18,6 @@ your group.
 | file | what it is |
 |---|---|
 | `Lab4_bayesian_networks.ipynb` | the notebook the session runs on |
-| `gym_log.csv` | 2016 five-minute slots of a gym's operating log: two situations, three sensors |
+| `gym_log.csv` | 2016 synthetic examples for an illustrative gym scenario: two situation labels and three sensor variables |
+
+The data are generated for teaching, not collected from a real gym. To use these revised local files in Colab, upload the revised notebook and CSV together; the existing online badge opens the repository version.

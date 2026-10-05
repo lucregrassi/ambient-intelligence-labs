@@ -9,9 +9,9 @@ this way.
 
 ---
 
-## Before you start
+## The network
 
-**Wi-Fi.** The sensor needs a **2.4 GHz network with a single shared WPA2 password**, and that
+The sensor needs a **2.4 GHz network with a single shared WPA2 password**, and that
 rules out every network the university runs.
 
 - **Eduroam will not work.** It is WPA2-Enterprise: each user authenticates individually with their

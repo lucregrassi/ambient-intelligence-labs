@@ -8,7 +8,7 @@ nothing to install. The log file it uses is in this folder and the notebook fetc
 **Do `File → Save a copy in Drive` before you start.** What opens is a read-only copy;
 if you close the tab without saving, your work is gone.
 
-**Bring paper.** The first thing you do is draw the network by hand, before any code.
+The first thing we do is draw the network by hand, on paper, before any code.
 
 Colab needs a Google account. If you do not have one, work on the laptop of someone in
 your group.

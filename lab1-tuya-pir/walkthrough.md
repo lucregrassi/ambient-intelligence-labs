@@ -1,9 +1,8 @@
 # Lab 1 — PIR from the Tuya cloud, step by step
 
-Everything we do together in the laboratory, in order. Nothing here has to be done in advance —
-the accounts are created during the session on purpose, so that you see what each one is for.
-Before you come, read the network section of the [README](README.md): the sensor cannot join
-eduroam, and without a 2.4 GHz hotspot nothing below will work.
+Everything we do together in the laboratory, in order. The accounts are created during the
+session on purpose, so that you see what each one is for. The sensor needs a 2.4 GHz phone
+hotspot, as explained in the network section of the [README](README.md): it cannot join eduroam.
 
 ---
 
@@ -101,6 +100,32 @@ git clone https://github.com/lucregrassi/ambient-intelligence-labs.git
 cd ambient-intelligence-labs/lab1-tuya-pir
 ```
 
+<details>
+<summary><b>No Python or no git on your laptop?</b></summary>
+
+Check first, in a terminal (on Windows, in PowerShell):
+
+```bash
+python3 --version      # Windows: python --version
+git --version
+```
+
+You need Python 3.9 or later. If one of the two is missing:
+
+- **Windows.** Python: the installer from <https://www.python.org/downloads/> — on its first
+  screen tick **Add python.exe to PATH**, otherwise the terminal will not find it. Git: the
+  installer from <https://git-scm.com/downloads>, with the default options. Close and reopen
+  PowerShell afterwards. On Windows the command is `python`, not `python3`, in every step below.
+- **macOS.** Typing `python3 --version` or `git --version` offers to install Apple's command
+  line developer tools, which include both. Accept, wait a few minutes, and run the command again.
+- **Ubuntu or Debian.** `sudo apt install python3 python3-venv git`. The `python3-venv` package
+  is needed for the next step and is not always installed with Python.
+
+No git and no time to install it? On the GitHub page of the repository, click **Code → Download
+ZIP**, unzip it, and open a terminal in the `lab1-tuya-pir` folder inside it. Everything else
+works the same.
+</details>
+
 ### Create a virtual environment
 
 Do not skip this. On recent Ubuntu, Debian and macOS with Homebrew Python, installing
@@ -111,6 +136,9 @@ python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
+
+On Windows, if PowerShell refuses to activate the environment because running scripts is
+disabled, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, then try again.
 
 ### Create your .env
 

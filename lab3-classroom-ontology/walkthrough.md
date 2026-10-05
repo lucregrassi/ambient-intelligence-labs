@@ -10,7 +10,7 @@ hidden behind a click. Try to answer before you open them — that is where the 
 
 ---
 
-## 01 · Before you start
+## 01 · Getting ready
 
 Protégé installed and the starting file downloaded — the [README](README.md) says which installer
 to take and how to get the file. [`classroom_final.owl`](classroom_final.owl) is where we arrive:
@@ -199,7 +199,7 @@ not in a later one.
 | **5** | The whiteboard rule | alice is in e2 and can see the whiteboard. |
 | **6** | `desk_1` declared a Person | The reasoner reports inconsistency. |
 
-Check this sequence with the installed version before class. If reasoning is unexpectedly slow, inspect the whole axiom set, supported features, memory and recent changes; cardinality is one possible cause.
+If reasoning is unexpectedly slow, inspect the whole axiom set, the features it uses, the memory available and your most recent changes; a large cardinality restriction is one possible cause.
 
 ## 10 · What will go wrong on your own ontology
 

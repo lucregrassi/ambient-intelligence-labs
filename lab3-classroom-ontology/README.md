@@ -1,16 +1,14 @@
 # Lab 3 — Classroom ontology in Protégé
 
 This lab runs on your own laptop, in **Protégé**. There is no notebook and nothing to open in the
-browser, so the one thing you have to do in advance is install the software.
+browser.
 
-## Before the lesson — install Protégé
+## Protégé
 
 Protégé 5.6 is free and runs on Windows, macOS and Linux: <https://protege.stanford.edu>
 
 Download the **installer for your system**, not the generic ZIP: the installers come with the Java
 runtime included, the ZIP expects you to have one already.
-
-Open it once before the lesson, just to check that it starts.
 
 ## The file
 
@@ -27,7 +25,4 @@ appear after each one, and the questions with the answers hidden behind a click,
 try before you look. Follow it during the lab, or use it to redo the whole thing on your own.
 
 [`classroom_final.owl`](classroom_final.owl) is the state we end at.
-
-We build everything together, so there is nothing to prepare: bring your charged laptop with
-Protégé installed and the ontology file already downloaded.
 

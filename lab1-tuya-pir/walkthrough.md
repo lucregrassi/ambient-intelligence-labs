@@ -121,9 +121,6 @@ You need Python 3.9 or later. If one of the two is missing:
 - **Ubuntu or Debian.** `sudo apt install python3 python3-venv git`. The `python3-venv` package
   is needed for the next step and is not always installed with Python.
 
-No git and no time to install it? On the GitHub page of the repository, click **Code → Download
-ZIP**, unzip it, and open a terminal in the `lab1-tuya-pir` folder inside it. Everything else
-works the same.
 </details>
 
 ### Create a virtual environment

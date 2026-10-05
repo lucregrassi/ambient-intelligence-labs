@@ -45,6 +45,3 @@ thing that stops you.
 [`walkthrough.md`](walkthrough.md) carries everything we do together in the laboratory, in order:
 install the app, create the cloud project, pair the sensor, link the two accounts, set up the
 Python project and run it. Follow it during the lab, or use it to redo the whole thing on your own.
-
-Bring a charged laptop and the phone that will provide the hotspot.
-

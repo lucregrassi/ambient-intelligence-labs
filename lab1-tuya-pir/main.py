@@ -21,14 +21,6 @@ from dotenv import load_dotenv
 from tuya_iot import TuyaOpenAPI
 from colorama import Fore, Style
 
-# Optional: the script must run without it. On Linux it needs espeak-ng.
-try:
-    import pyttsx3
-    engine = pyttsx3.init()
-except Exception as exc:
-    print(f"Text to speech not available ({exc}) — continuing without it.")
-    engine = None
-
 parser = argparse.ArgumentParser(description="Read a Tuya PIR sensor from the cloud.")
 parser.add_argument("--interval", type=float, default=5.0,
                     help="seconds between cloud requests (default: 5)")
@@ -135,7 +127,6 @@ if args.csv:
         writer.writerow(["timestamp", "device_id", "pir", "battery_percentage"])
     print(f"Writing every reading to {args.csv}\n")
 
-previous_motion_status = None
 first_reading = True
 calls = 0
 
@@ -195,11 +186,6 @@ try:
                                  DEVICE_ID, motion_status, battery])
                 csvfile.flush()      # without this the file stays empty until you quit
 
-            if engine and motion_status == "pir" and previous_motion_status != "pir":
-                engine.say("Motion detected!")
-                engine.runAndWait()
-
-            previous_motion_status = motion_status
             time.sleep(args.interval)
 
         except Exception as exc:

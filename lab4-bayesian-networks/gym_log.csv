@@ -1,4 +1,4 @@
-Class,Busy,Sound,CO2,Vibration
+GroupClass,WeightRoomCrowded,WeightRoomSound,WeightRoomCO2,WeightRoomVibration
 yes,yes,yes,no,yes
 no,no,no,no,no
 no,no,no,yes,no

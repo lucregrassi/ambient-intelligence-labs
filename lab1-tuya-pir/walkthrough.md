@@ -112,16 +112,6 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Optionally, for the spoken "Motion detected!" announcement:
-
-```bash
-pip install -r requirements-optional.txt
-```
-
-It is optional on purpose. On macOS it installs about 170 packages, and on Linux it also
-needs the system package `espeak-ng`. The script detects that it is missing and carries on
-without it.
-
 ### Create your .env
 
 ```bash

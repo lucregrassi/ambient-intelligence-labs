@@ -7,12 +7,10 @@ University of Genoa
 Author: Lucrezia Grassi <lucrezia.grassi@unige.it>
 
 Run:  python3 main.py                 (one reading every 5 seconds)
-      python3 main.py --interval 1    (one reading every second)
-      python3 main.py --csv motion.csv
+      python3 main.py --interval 60   (one reading every minute)
 """
 
 import argparse
-import csv
 import os
 import time
 from datetime import datetime
@@ -24,8 +22,6 @@ from colorama import Fore, Style
 parser = argparse.ArgumentParser(description="Read a Tuya PIR sensor from the cloud.")
 parser.add_argument("--interval", type=float, default=5.0,
                     help="seconds between cloud requests (default: 5)")
-parser.add_argument("--csv", default=None,
-                    help="append every reading to this CSV file")
 args = parser.parse_args()
 
 load_dotenv(override=True)
@@ -57,6 +53,7 @@ except Exception as exc:
     raise SystemExit(f"\nCould not reach {ENDPOINT}: {exc}\n"
                      "Check that you are online and that ENDPOINT is spelled correctly.\n")
 
+response = response or {}          # the library returns None on an HTTP error
 if not response.get("success"):
     raise SystemExit(
         f"\nLogin failed: {response.get('msg')} (code {response.get('code')})\n"
@@ -71,36 +68,18 @@ if not response.get("success"):
 
 print(f"Connected to {ENDPOINT} — polling every {args.interval:g} s. Ctrl-C to stop.\n")
 
-use_shadow = True
-
 
 def read_device():
-    """Return {code: (value, time_ms or None)}, or None if the request failed.
+    """Ask the cloud for the device's shadow: {code: (value, time in ms)}, or None.
 
-    The shadow endpoint gives each property together with the moment it was last
-    updated, which is the only way to tell a live reading from a stale one. If the
-    project cannot call it, fall back to the plain status endpoint, which has no times.
+    The shadow is the cloud's copy of the device: the last value of each property,
+    with the moment the cloud received it.
     """
-    global use_shadow
-    if use_shadow:
-        r = openapi.get(f"/v2.0/cloud/thing/{DEVICE_ID}/shadow/properties")
-        if r.get("success"):
-            return {q["code"]: (q["value"], q.get("time")) for q in r["result"]["properties"]}
-        use_shadow = False
-    r = openapi.get(f"/v1.0/iot-03/devices/{DEVICE_ID}/status")
-    if r.get("success"):
-        return {i["code"]: (i["value"], None) for i in r["result"]}
-    print(f"Request failed: {r.get('msg')} (code {r.get('code')})")
-    return None
-
-
-def read_online_status():
-    """Return Tuya's online flag, or None if the check is unavailable."""
-    r = openapi.get(f"/v1.1/iot-03/devices/{DEVICE_ID}")
+    r = openapi.get(f"/v2.0/cloud/thing/{DEVICE_ID}/shadow/properties") or {}
     if not r.get("success"):
-        print(f"Online check failed: {r.get('msg')} (code {r.get('code')})")
+        print(f"Request failed: {r.get('msg')} (code {r.get('code')})")
         return None
-    return (r.get("result") or {}).get("online")
+    return {p["code"]: (p["value"], p.get("time")) for p in r["result"]["properties"]}
 
 
 def age(ms):
@@ -114,45 +93,15 @@ def age(ms):
         return f"({seconds:.0f} s ago)"
     if seconds < 5400:
         return f"({seconds / 60:.0f} min ago)"
-    if seconds < 86400:
-        return f"({seconds / 3600:.0f} h ago)"
-    return f"({seconds / 86400:.0f} days ago)"
+    return f"({seconds / 3600:.0f} h ago)"
 
-writer = None
-csvfile = None
-if args.csv:
-    csvfile = open(args.csv, "a", newline="")
-    writer = csv.writer(csvfile)
-    if csvfile.tell() == 0:
-        writer.writerow(["timestamp", "device_id", "pir", "battery_percentage"])
-    print(f"Writing every reading to {args.csv}\n")
 
 first_reading = True
 calls = 0
 
-# Checking this separate Tuya endpoint every 30 seconds avoids doubling every
-# polling request while still reporting a disconnection reasonably quickly.
-ONLINE_CHECK_INTERVAL = 30.0
-last_online_check = 0.0
-device_online = None
-
 try:
     while True:
         try:
-            now = time.monotonic()
-            if now - last_online_check >= ONLINE_CHECK_INTERVAL:
-                device_online = read_online_status()
-                calls += 1
-                last_online_check = now
-
-            if device_online is False:
-                stamp = datetime.now().strftime("%H:%M:%S")
-                print(f"{stamp}  {Fore.YELLOW}OFFLINE{Style.RESET_ALL}  "
-                      f"sensor not connected to Tuya   "
-                      f"[{calls} API calls this run]")
-                time.sleep(args.interval)
-                continue
-
             # One GET request = one API call against your monthly quota.
             status = read_device()
             calls += 1
@@ -161,13 +110,12 @@ try:
                 time.sleep(args.interval)
                 continue
 
-            # Not every PIR model calls motion "pir", so show the codes once.
+            # Not every PIR model calls motion "pir_state", so show the codes once.
             if first_reading:
                 print(f"This device reports: {list(status.keys())}\n")
                 first_reading = False
 
             motion_status, reported_at = status.get("pir_state", (None, None))
-            battery = status.get("battery_percentage", (None, None))[0]
 
             if motion_status is None:
                 print("No 'pir_state' field in the response — check the codes printed above.")
@@ -178,13 +126,8 @@ try:
             colour = Fore.GREEN if motion_status == "pir" else Fore.RED
             label = "MOTION" if motion_status == "pir" else "  --  "
             print(f"{stamp}  {colour}{label}{Style.RESET_ALL}   "
-                  f"battery {battery}%   {age(reported_at):<16} "
+                  f"{age(reported_at):<16} "
                   f"[{calls} API calls this run]")
-
-            if writer:
-                writer.writerow([datetime.now().isoformat(timespec="seconds"),
-                                 DEVICE_ID, motion_status, battery])
-                csvfile.flush()      # without this the file stays empty until you quit
 
             time.sleep(args.interval)
 
@@ -195,6 +138,3 @@ try:
 
 except KeyboardInterrupt:
     print(f"\nStopped after {calls} API calls.")
-finally:
-    if csvfile:
-        csvfile.close()

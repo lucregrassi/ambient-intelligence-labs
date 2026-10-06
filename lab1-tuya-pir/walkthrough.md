@@ -160,7 +160,7 @@ Two things that cost people twenty minutes each:
 - Tuya wants the country code as `39`, not `+39`. `main.py` strips the plus for you, but
   every other example you find online will not.
 
-`.env` is in `.gitignore`. Keep it that way: those four values are enough for anyone to
+`.env` is in `.gitignore`. Keep it that way: those values are enough for anyone to
 read your devices.
 
 ---
@@ -174,34 +174,135 @@ python3 main.py
 ```
 Connected to https://openapi.tuyaeu.com — polling every 5 s. Ctrl-C to stop.
 
-This device reports: ['pir', 'battery_percentage', 'battery_state']
+This device reports: ['pir_state', 'battery_percentage', 'alarm_time', 'charge_state', 'pwd_free_arm', 'work_mode']
 
-14:32:07     --      battery 87%   [1 API calls this run]
-14:32:12   MOTION    battery 87%   [2 API calls this run]
+10:46:29    --     (65 s ago)       [1 API calls this run]
+10:46:34    --     (71 s ago)       [2 API calls this run]
+10:46:39  MOTION   (just now)       [3 API calls this run]
 ```
 
 The first line after connecting prints **the codes this particular device actually
-reports**. Not every PIR model calls motion `pir`; some report `presence_state`. If yours
-does, that line is where you find out, instead of watching a script that prints nothing.
+reports**. The script reads `pir_state`, which is what our sensors call motion; other models
+use `pir` or `presence_state`. If yours does, that line is where you find out, and the name in
+the script is the one thing to change.
+
+The time in brackets is **how long ago the sensor reported that value**, not when the script
+asked: the first two lines show a value that is more than a minute old.
 
 The call counter is there so that you can watch your monthly quota being spent.
 
-### Options
+To ask less often, give the interval in seconds:
 
 ```bash
-python3 main.py --interval 1          # one reading per second
-python3 main.py --csv motion.csv      # also append every reading to a CSV file
+python3 main.py --interval 60         # one reading per minute
 ```
+
+---
+
+## Step 7 — Print only the changes
+
+As it is, the script prints a line every five seconds whatever happens, and after a few minutes
+the terminal is full of identical lines. Change it so that it prints a line **only when the motion
+value is different from the previous one**. You need one new variable and one condition; the time
+is already at the start of every line.
+
+Then sit completely still for a minute, and watch the terminal.
+
+<details>
+<summary><b>One way to do it</b></summary>
+
+Before the `while True:` loop, create the variable:
+
+```python
+previous = None
+```
+
+Inside the loop, put the `print(...)` of the reading under a condition, and update the variable
+after it:
+
+```python
+if motion_status != previous:
+    print(...)        # the line the script already prints
+previous = motion_status
+```
+
+The first reading is always printed, because at the start there is no previous value. After
+that, every line is an event: motion started, or motion stopped. The original script printed
+the **level** of the signal, its value at each moment; this one prints its **edges**, the moments
+it changes.
+</details>
+
+<details>
+<summary><b>Why did it print nothing while you were sitting still?</b></summary>
+
+A PIR detects a change in the infrared that reaches it, not a body. A person who does not move
+produces no change, and therefore no event. With this sensor alone, "nobody is here" and
+"somebody is here, not moving" look exactly the same.
+</details>
+
+## If everything works: a few more tests
+
+Each one takes a few minutes and uses only what you already have. Before trying, guess what
+will happen.
+
+**1. How long does "motion" last?** Make one movement in front of the sensor, then keep still.
+How long before the value goes back to `--`? Then try moving again before it does: does the
+wait start over?
+
+<details>
+<summary><b>What you should see</b></summary>
+
+On the sensor we use, about thirty seconds. This is the **hold time**: the sensor keeps reporting
+motion for a while after the last movement, which hides, for a while, the fact that a still person
+disappears. Whether a new movement restarts the wait depends on the firmware, and what you have
+just seen is the answer for this model.
+</details>
+
+**2. Towards the sensor, or across it?** From the far side of the room, walk slowly straight
+towards the sensor. Then walk across its field of view, at the same distance.
+
+<details>
+<summary><b>What you should see</b></summary>
+
+Walking across triggers it much more easily. The lens divides the field of view into zones, and
+the sensor fires when a warm body moves from one zone into the next. Walking straight at it keeps
+you in the same zones for longer. This is why a PIR at a door is mounted to look across the
+doorway, not straight at it.
+</details>
+
+**3. Ask less often.** Run `python3 main.py --interval 60`. Right after a line is printed, make
+one short movement and then keep still. Does the next line show it?
+
+<details>
+<summary><b>What you should see</b></summary>
+
+Often it does not. The value goes back to `--` after about thirty seconds, before the next
+request arrives a minute later: the movement happened, and the script never knew. Polling only
+sees what is still true at the moment it asks. Asking more often costs more calls; the
+alternative is push, where the cloud reports each change as it happens.
+</details>
+
+**4. Switch the hotspot off.** Do this one last. With the script running, turn off the phone's
+hotspot for a minute, then turn it back on.
+
+<details>
+<summary><b>What you should see</b></summary>
+
+The script keeps printing the last value as if nothing had happened: the cloud answers with what
+it last received. Only the age at the end of the line gives it away, growing minute after minute,
+and if you move in front of the sensor nothing changes. When the hotspot is back the sensor should
+reconnect by itself (if it does not, switch it off and on). The sensor never stopped working: the
+chain broke one link away from it.
+</details>
 
 ---
 
 Three things worth noticing:
 
 - **The sensor never talks to your computer.** Everything goes through a server you do not
-  own, in a country you did not choose. If it goes down, or the trial expires, your sensor
-  is a plastic box.
+  own. If it goes down, or the trial expires, your sensor is a plastic box.
 - **You are polling.** You ask the cloud "anything new?" every few seconds, and almost every
   answer is "no". The alternative is push — the cloud tells you when something changes —
   which costs no quota while nothing happens and needs an address the cloud can reach.
-- **Your credentials are a key to the room.** With those four values, anyone can read when
-  you are in it.
+- **Your credentials are a key to the room.** With the values in your `.env`, anyone can read
+  when you are in it.

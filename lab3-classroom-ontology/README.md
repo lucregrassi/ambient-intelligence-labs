@@ -82,7 +82,6 @@ Each one is a subclass of `Room`, with the condition in **Equivalent To**:
 TeachingRoom    Room and (equippedWith some Projector) and (equippedWith some Whiteboard)
 MonitoredRoom   Room and (equippedWith some PresenceSensor)
 OccupiedRoom    Room and (hosts some Person)
-ExamRoom        Room and (usedFor some Exam)
 CrowdedRoom     Room and (hosts min 4 Person)
 ```
 

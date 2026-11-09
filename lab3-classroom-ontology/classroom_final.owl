@@ -189,25 +189,6 @@
     
 
 
-    <!-- http://www.unige.it/ami/classroom.owl#ExamRoom -->
-
-    <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#ExamRoom">
-        <owl:equivalentClass>
-            <owl:Class>
-                <owl:intersectionOf rdf:parseType="Collection">
-                    <rdf:Description rdf:about="http://www.unige.it/ami/classroom.owl#Room"/>
-                    <owl:Restriction>
-                        <owl:onProperty rdf:resource="http://www.unige.it/ami/classroom.owl#usedFor"/>
-                        <owl:someValuesFrom rdf:resource="http://www.unige.it/ami/classroom.owl#Exam"/>
-                    </owl:Restriction>
-                </owl:intersectionOf>
-            </owl:Class>
-        </owl:equivalentClass>
-        <rdfs:subClassOf rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
-    </owl:Class>
-    
-
-
     <!-- http://www.unige.it/ami/classroom.owl#Furniture -->
 
     <owl:Class rdf:about="http://www.unige.it/ami/classroom.owl#Furniture">

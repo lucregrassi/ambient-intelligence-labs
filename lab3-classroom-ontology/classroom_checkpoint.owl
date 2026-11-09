@@ -138,7 +138,7 @@
   <rdf:type rdf:resource="#Classroom"/>
 </owl:NamedIndividual>
 
-<owl:NamedIndividual rdf:about="#corridor_first_floor">
+<owl:NamedIndividual rdf:about="#corridor_ground_floor">
   <rdf:type rdf:resource="#Corridor"/>
 </owl:NamedIndividual>
 

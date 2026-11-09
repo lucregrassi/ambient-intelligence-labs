@@ -404,9 +404,9 @@
     
 
 
-    <!-- http://www.unige.it/ami/classroom.owl#corridor_first_floor -->
+    <!-- http://www.unige.it/ami/classroom.owl#corridor_ground_floor -->
 
-    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#corridor_first_floor">
+    <owl:NamedIndividual rdf:about="http://www.unige.it/ami/classroom.owl#corridor_ground_floor">
         <rdf:type rdf:resource="http://www.unige.it/ami/classroom.owl#Corridor"/>
     </owl:NamedIndividual>
     

@@ -90,7 +90,7 @@ CrowdedRoom     Room and (hosts min 4 Person)
 In the Rules view (**Window ▸ Views ▸ Ontology views ▸ Rules**), atoms separated by commas:
 
 ```
-Student(?s), seatedAt(?s, ?d), placedIn(?d, ?r), Room(?r) -> hosts(?r, ?s)
+Student(?s), seatedAt(?s, ?d), placedIn(?d, ?r) -> hosts(?r, ?s)
 hosts(?r, ?p), equippedWith(?r, ?w), Whiteboard(?w) -> canSee(?p, ?w)
 ```
 

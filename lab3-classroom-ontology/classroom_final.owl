@@ -579,19 +579,7 @@
                                         <swrl:argument2 rdf:resource="urn:swrl#r"/>
                                     </rdf:Description>
                                 </rdf:first>
-                                <rdf:rest>
-                                    <rdf:Description>
-                                        <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#AtomList"/>
-                                        <rdf:first>
-                                            <rdf:Description>
-                                                <rdf:type rdf:resource="http://www.w3.org/2003/11/swrl#ClassAtom"/>
-                                                <swrl:classPredicate rdf:resource="http://www.unige.it/ami/classroom.owl#Room"/>
-                                                <swrl:argument1 rdf:resource="urn:swrl#r"/>
-                                            </rdf:Description>
-                                        </rdf:first>
-                                        <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
-                                    </rdf:Description>
-                                </rdf:rest>
+                                <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
                             </rdf:Description>
                         </rdf:rest>
                     </rdf:Description>
